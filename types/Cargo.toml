@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: 2023 Phoenix R&D GmbH <hello@phnx.im>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "minimal-ds-types"
+version = "0.1.0"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tls_codec = { version = "0.4.2-pre.1", features = [
+    "derive",
+    "serde",
+    "mls",
+], git = "https://github.com/rustcrypto/formats" }
+serde = { version = "1.0", features = ["derive"] }
+uuid = { version = "1", features = ["serde", "v4"] }
+thiserror = "1.0"
+openmls = { git = "https://github.com/openmls/openmls" }
+rusqlite = { version = "0.31", optional = true }
+
+[features]
+rusqlite = ["dep:rusqlite"]

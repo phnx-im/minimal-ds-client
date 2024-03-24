@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: 2023 Phoenix R&D GmbH <hello@phnx.im>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[workspace]
+members = ["api_client", "types"]
+resolver = "2"
+
+[workspace.package]
+authors = ["Phoenix R&D <hello@phnx.im>"]
+edition = "2021"
+license = "AGPL-3.0-or-later"
+version = "0.1.0"
+homepage = "https://phnx.im"
+repository = "https://github.com/phnx-im/minimal-ds-client"
+readme = "README.md"

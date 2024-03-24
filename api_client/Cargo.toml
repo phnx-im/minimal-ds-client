@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2023 Phoenix R&D GmbH <hello@phnx.im>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+[package]
+name = "api_client"
+version = "0.1.0"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+minimal-ds-types = { path = "../types" }
+mls-assist = { git = "https://github.com/phnx-im/mls-assist", branch = "konrad/towards_openmls_main" }
+reqwest = { version = "0.11" }
+openmls = { git = "https://github.com/openmls/openmls" }
+thiserror = "1.0"
