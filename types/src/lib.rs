@@ -131,7 +131,7 @@ impl TryFrom<&[u8]> for DsClientId {
 impl ToSql for DsClientId {
     fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
         Ok(rusqlite::types::ToSqlOutput::Borrowed(
-            rusqlite::types::ValueRef::Blob(self.id.as_bytes()),
+            rusqlite::types::ValueRef::Blob(self.id.as_slice()),
         ))
     }
 }
@@ -139,8 +139,8 @@ impl ToSql for DsClientId {
 #[cfg(feature = "rusqlite")]
 impl FromSql for DsClientId {
     fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
-        let uuid = Uuid::column_result(value)?;
-        Ok(uuid.into())
+        let id = <[u8; 32]>::column_result(value)?;
+        Ok(Self { id })
     }
 }
 
