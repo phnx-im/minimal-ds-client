@@ -68,7 +68,6 @@ impl Deref for TlsUuid {
 
 #[derive(
     Debug,
-    Copy,
     Clone,
     PartialEq,
     Eq,
@@ -80,7 +79,7 @@ impl Deref for TlsUuid {
     TlsDeserializeBytes,
 )]
 pub struct DsClientId {
-    id: [u8; 32],
+    id: Vec<u8>,
 }
 
 impl DsClientId {
@@ -97,7 +96,7 @@ impl DsClientId {
         Self::try_from(identity.as_slice())
     }
 
-    pub fn as_bytes(&self) -> &[u8; 32] {
+    pub fn as_bytes(&self) -> &[u8] {
         &self.id
     }
 }
@@ -120,9 +119,10 @@ impl TryFrom<&[u8]> for DsClientId {
     type Error = DsClientIdError;
 
     fn try_from(bytes: &[u8]) -> Result<Self, Self::Error> {
-        let id = bytes
-            .try_into()
-            .map_err(|_| DsClientIdError::TooManyBytes)?;
+        if bytes.len() != 1000 {
+            return Err(DsClientIdError::TooManyBytes);
+        }
+        let id = bytes.to_vec();
         Ok(Self { id })
     }
 }
@@ -202,7 +202,7 @@ pub struct AuthToken {
     token: [u8; 32],
 }
 
-#[derive(Debug, Clone, Copy, TlsSize, TlsSerialize, TlsDeserializeBytes)]
+#[derive(Debug, Clone, TlsSize, TlsSerialize, TlsDeserializeBytes)]
 pub struct ClientCredentials {
     pub client_id: DsClientId,
     pub token: AuthToken,
@@ -210,7 +210,7 @@ pub struct ClientCredentials {
 
 impl ClientCredentials {
     pub fn client_id(&self) -> DsClientId {
-        self.client_id
+        self.client_id.clone()
     }
 }
 

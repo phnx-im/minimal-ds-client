@@ -295,7 +295,7 @@ impl ApiClient {
 
     /// Get the client ID of this client.
     pub fn client_id(&self) -> DsClientId {
-        self.client_id
+        self.client_id.clone()
     }
 }
 
@@ -303,7 +303,7 @@ impl ApiClient {
 impl ApiClient {
     fn client_credentials(&self) -> ClientCredentials {
         ClientCredentials {
-            client_id: self.client_id,
+            client_id: self.client_id.clone(),
             token: self.auth_token,
         }
     }
