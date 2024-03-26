@@ -139,7 +139,7 @@ impl ToSql for DsClientId {
 #[cfg(feature = "rusqlite")]
 impl FromSql for DsClientId {
     fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
-        let id = <[u8; 32]>::column_result(value)?;
+        let id = <Vec<u8>>::column_result(value)?;
         Ok(Self { id })
     }
 }
