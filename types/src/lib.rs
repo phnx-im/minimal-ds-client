@@ -202,23 +202,6 @@ pub struct AuthToken {
     token: [u8; 32],
 }
 
-#[cfg(feature = "rusqlite")]
-impl ToSql for AuthToken {
-    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
-        Ok(rusqlite::types::ToSqlOutput::Borrowed(
-            rusqlite::types::ValueRef::Blob(self.token()),
-        ))
-    }
-}
-
-#[cfg(feature = "rusqlite")]
-impl FromSql for AuthToken {
-    fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
-        let array = FromSql::column_result(value)?;
-        Ok(AuthToken::from_sqlite_array(array))
-    }
-}
-
 #[derive(Debug, Clone, TlsSize, TlsSerialize, TlsDeserializeBytes)]
 pub struct ClientCredentials {
     pub client_id: DsClientId,
