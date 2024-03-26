@@ -119,7 +119,7 @@ impl TryFrom<&[u8]> for DsClientId {
     type Error = DsClientIdError;
 
     fn try_from(bytes: &[u8]) -> Result<Self, Self::Error> {
-        if bytes.len() != 1000 {
+        if bytes.len() >= 1000 {
             return Err(DsClientIdError::TooManyBytes);
         }
         let id = bytes.to_vec();
@@ -200,6 +200,23 @@ pub enum DsGroupIdError {
 #[derive(Debug, Clone, Copy, PartialEq, TlsSize, TlsSerialize, TlsDeserializeBytes)]
 pub struct AuthToken {
     token: [u8; 32],
+}
+
+#[cfg(feature = "rusqlite")]
+impl ToSql for AuthToken {
+    fn to_sql(&self) -> rusqlite::Result<rusqlite::types::ToSqlOutput<'_>> {
+        Ok(rusqlite::types::ToSqlOutput::Borrowed(
+            rusqlite::types::ValueRef::Blob(self.token()),
+        ))
+    }
+}
+
+#[cfg(feature = "rusqlite")]
+impl FromSql for AuthToken {
+    fn column_result(value: rusqlite::types::ValueRef<'_>) -> rusqlite::types::FromSqlResult<Self> {
+        let array = FromSql::column_result(value)?;
+        Ok(AuthToken::from_sqlite_array(array))
+    }
 }
 
 #[derive(Debug, Clone, TlsSize, TlsSerialize, TlsDeserializeBytes)]
