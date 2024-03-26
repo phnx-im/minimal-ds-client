@@ -25,7 +25,7 @@ use minimal_ds_types::{
     requests::{
         DeleteClientRequest, DeleteGroupRequest, FetchKeyPackageRequest, FetchMessagesRequest,
     },
-    AuthToken, ClientCredentials, DsClientId, DsGroupId,
+    AuthToken, ClientCredentials,
 };
 use mls_assist::messages::{AssistedMessageError, AssistedMessageOut};
 use openmls::{
@@ -39,6 +39,9 @@ use openmls::{
 };
 use requests::{MinimalDsMessageOut, MinimalDsResponseIn, RegisterClientRequestOut};
 use reqwest::{Client, Url};
+
+// Re-export types
+pub use minimal_ds_types::{DsClientId, DsGroupId};
 
 pub mod errors;
 pub mod requests;

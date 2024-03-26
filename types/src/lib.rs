@@ -80,14 +80,12 @@ impl Deref for TlsUuid {
     TlsDeserializeBytes,
 )]
 pub struct DsClientId {
-    id: TlsUuid,
+    id: [u8; 32],
 }
 
 impl DsClientId {
-    pub fn new() -> Self {
-        Self {
-            id: Uuid::new_v4().into(),
-        }
+    pub fn new(bytes: &[u8]) -> Result<Self, DsClientIdError> {
+        bytes.try_into()
     }
 
     pub fn from_serialized_credential(
@@ -99,14 +97,14 @@ impl DsClientId {
         Self::try_from(identity.as_slice())
     }
 
-    pub fn as_bytes(&self) -> &[u8; 16] {
-        self.id.as_bytes()
+    pub fn as_bytes(&self) -> &[u8; 32] {
+        &self.id
     }
 }
 
 impl std::fmt::Display for DsClientId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.id.deref())
+        write!(f, "{:?}", self.id)
     }
 }
 
@@ -114,22 +112,18 @@ impl std::fmt::Display for DsClientId {
 pub enum DsClientIdError {
     #[error("Invalid Credential: {0}")]
     InvalidCredential(#[from] tls_codec::Error),
-    #[error(transparent)]
-    InvalidUuid(#[from] uuid::Error),
+    #[error("Too many bytes in the input. Expected 32 bytes.")]
+    TooManyBytes,
 }
 
 impl TryFrom<&[u8]> for DsClientId {
     type Error = DsClientIdError;
 
     fn try_from(bytes: &[u8]) -> Result<Self, Self::Error> {
-        let id = Uuid::from_slice(bytes)?.into();
+        let id = bytes
+            .try_into()
+            .map_err(|_| DsClientIdError::TooManyBytes)?;
         Ok(Self { id })
-    }
-}
-
-impl From<Uuid> for DsClientId {
-    fn from(id: Uuid) -> Self {
-        Self { id: id.into() }
     }
 }
 
